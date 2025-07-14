@@ -6,9 +6,7 @@ This repository accompanies the paper:
 
 It contains all code, data, and figures needed to reproduce the analyses, figures, and results presented in the main text and supplementary materials.
 
-> ⚠️ **Note:** This repository is intended solely for reproducing the paper.  
-> For a general-use Python package implementing local graph estimation and pathwise feature selection (PFS), see:  
-> https://github.com/omelikechi/localgraph
+> ⚠️ **Note:** This repository is intended solely for reproducing the paper. For a general-use Python package implementing local graph estimation and pathwise feature selection (PFS), see: https://github.com/omelikechi/localgraph
 
 ---
 
