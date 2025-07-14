@@ -1,0 +1,6 @@
+localgraph==0.1.1
+ipss==1.1.1
+matplotlib>=3.0.0
+networkx>=2.0
+numpy>=1.16.0
+scikit-learn>=1.0.0
