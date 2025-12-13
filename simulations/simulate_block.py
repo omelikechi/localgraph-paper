@@ -3,6 +3,9 @@
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 
+import warnings
+warnings.filterwarnings('ignore', category=RuntimeWarning)
+
 #--------------------------------
 # Generate data
 #--------------------------------

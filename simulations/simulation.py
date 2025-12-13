@@ -93,11 +93,11 @@ lambda_ = None
 flare_crit = 'stars' # options: cv, stars
 huge_crit = 'ric' # options: ebic, stars, ric
 method_configs = {
-	'bnwsl': {'method':'B_NW_SL', 'lambda_':None, 'alpha':fdr},
-	'dsgl':{'method':'D-S_GL', 'lambda_':None, 'alpha':fdr},
-	'dsnwsl':{'method':'D-S_NW_SL', 'lambda_':None, 'alpha':fdr},
-	'gfcl':{'method':'GFC_L', 'lambda_':None, 'alpha':fdr},
-	'gfcsl':{'method':'GFC_SL', 'lambda_':None, 'alpha':fdr},
+	'bnwsl': {'method':'B_NW_SL', 'alpha':fdr},
+	'dsgl':{'method':'D-S_GL', 'alpha':fdr},
+	'dsnwsl':{'method':'D-S_NW_SL', 'alpha':fdr},
+	'gfcl':{'method':'GFC_L', 'alpha':fdr},
+	'gfcsl':{'method':'GFC_SL', 'alpha':fdr},
 	'glasso':{'method':'glasso', 'sym':'or', 'lambda_':lambda_, 'criterion':huge_crit},
 	'mb':{'method':'mb', 'sym':'or', 'lambda_':None, 'criterion':huge_crit},
 	'pfs':{'selector':ipss_selector, 'qpath_max':qpath_max, 'max_radius':max(radii), 

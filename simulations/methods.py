@@ -1,24 +1,18 @@
 # Methods for graphical inference
 
-import warnings
-
 # from dagma.linear import DagmaLinear
 # from dagma.nonlinear import DagmaMLP, DagmaNonlinear
 import numpy as np
-import rpy2.robjects as robjects
-from rpy2.robjects.packages import importr
-from rpy2.robjects import numpy2ri
-from rpy2.robjects.conversion import localconverter
 
-# enable automatic numpy to rpy2 conversion
-numpy2ri.activate()
+import rpy2.robjects as robjects
+from rpy2.robjects import FloatVector, numpy2ri
+from rpy2.robjects.conversion import localconverter
+from rpy2.robjects.packages import importr
 
 # import R packages
-flare = importr('flare')
 huge = importr('huge')
 mgm = importr('mgm')
 silggm = importr('SILGGM')
-wgcna = importr('WGCNA')
 
 # #--------------------------------
 # # dagma
@@ -49,27 +43,6 @@ wgcna = importr('WGCNA')
 # 	return adjacency_matrix
 
 #--------------------------------
-# flare
-#--------------------------------
-def flareR(X, method='tiger', lambda_=None, criterion='stars', sym='or'):
-	r_matrix = numpy2ri.py2rpy(X)
-
-	if lambda_ is None:
-		result = flare.sugm(r_matrix, method=method, sym=sym, verbose=False)
-		select = flare.sugm_select(result, criterion=criterion, verbose=False)
-		A = select.rx2('refit')
-	else:
-		result = flare.sugm(r_matrix, method=method, **{'lambda': lambda_}, sym=sym, verbose=False)
-		A = result.rx2('path')[0]
-
-	A = robjects.r['as.matrix'](A)
-	with localconverter(robjects.default_converter + numpy2ri.converter):
-		A_numpy = np.array(A)
-	adjacency_matrix = (A_numpy != 0).astype(int)
-
-	return adjacency_matrix
-
-#--------------------------------
 # gipss
 #--------------------------------
 def run_gipss(X, target_features, fdr_path, fdr_local=None, max_radius=None, feature_names=None, selector='gb'):
@@ -81,20 +54,32 @@ def run_gipss(X, target_features, fdr_path, fdr_local=None, max_radius=None, fea
 #--------------------------------
 # huge
 #--------------------------------
-def hugeR(X, method='glasso', lambda_=None, criterion='ric', sym='or'):
-	r_matrix = numpy2ri.py2rpy(X)
+def hugeR(X, method, **huge_args):
 
-	if lambda_ is None:
-		result = huge.huge(r_matrix, method=method, sym=sym, verbose=False)
+	with localconverter(robjects.default_converter + numpy2ri.converter):
+		X_r = robjects.conversion.py2rpy(X)
+
+	criterion = huge_args.pop('criterion', 'ric')
+	lambda_ = huge_args.pop('lambda_', None)
+
+	# apply nonparanormal transformation
+	apply_npn = huge_args.pop('apply_npn', False)
+	if apply_npn:
+		npn = robjects.r['huge.npn']
+		X_r = npn(X_r, verbose=False)
+
+	if lambda_ is not None:
+		lambda_ = FloatVector([float(lambda_)])
+		result = huge.huge(X_r, method=method, verbose=False, **{'lambda': lambda_}, **huge_args)
+		A = result.rx2('path')[0]
+	else:
+		result = huge.huge(X_r, method=method, verbose=False, **huge_args)
 		select = huge.huge_select(result, criterion=criterion, verbose=False)
 		A = select.rx2('refit')
-	else:
-		result = huge.huge(r_matrix, method=method, **{'lambda': lambda_}, verbose=False)
-		A = result.rx2('path')[0]
 
-	A = robjects.r['as.matrix'](A)
 	with localconverter(robjects.default_converter + numpy2ri.converter):
-		A_numpy = np.array(A)
+		A_numpy = np.array(robjects.r['as.matrix'](A))
+
 	adjacency_matrix = (A_numpy != 0).astype(int)
 
 	return adjacency_matrix
@@ -108,25 +93,26 @@ def mgmR(X, feature_type=None, level=None):
 	if level is None:
 		level = [1] * X.shape[1]  # Default level for Gaussian variables
 
-	r_matrix = numpy2ri.py2rpy(X)
-
-	# Call the R mgm function
-	mgm = robjects.r['mgm']
-	robjects.r('sink("/dev/null")')
-	try:
-		result = mgm(data=r_matrix, type=feature_type, level=level)
-	finally:
-		robjects.r('sink()')
-
-	# Extract the weighted adjacency matrix (equivalent to result$pairwise$wadj in R)
-	A = result.rx2('pairwise').rx2('wadj')
-
-	# Convert to NumPy array
 	with localconverter(robjects.default_converter + numpy2ri.converter):
-		A_numpy = np.array(A)
+		r_matrix = X
 
-	# Convert to binary adjacency matrix (1 if nonzero, else 0)
-	adjacency_matrix = (A_numpy != 0).astype(int)
+		# Call the R mgm function
+		mgm = robjects.r['mgm']
+		robjects.r('sink("/dev/null")')
+		try:
+			result = mgm(data=r_matrix, type=feature_type, level=level)
+		finally:
+			robjects.r('sink()')
+
+		# Extract the weighted adjacency matrix (equivalent to result$pairwise$wadj in R)
+		A = result.rx2('pairwise').rx2('wadj')
+
+		# Convert to NumPy array
+		with localconverter(robjects.default_converter + numpy2ri.converter):
+			A_numpy = np.array(A)
+
+		# Convert to binary adjacency matrix (1 if nonzero, else 0)
+		adjacency_matrix = (A_numpy != 0).astype(int)
 
 	return adjacency_matrix
 
@@ -160,45 +146,46 @@ def mgmR(X, feature_type=None, level=None):
 #--------------------------------
 # silggm
 #--------------------------------
-def silggmR(X, method='GFC_L', lambda_=None, alpha=None):
-	r_matrix = numpy2ri.py2rpy(X)
+def silggmR(X, method, **silggm_args):
+	with localconverter(robjects.default_converter + numpy2ri.converter):
+		X_r = robjects.conversion.py2rpy(X)
 
-	if lambda_ is None:
-		lambda_ = robjects.NULL
-	if alpha is None:
-		alpha = 0.1
+	# Apply nonparanormal transformation if requested
+	apply_npn = silggm_args.pop('apply_npn', False)
+	if apply_npn:
+		npn = robjects.r['huge.npn']
+		X_r = npn(X_r, verbose=False)
+
+	silggm_args.setdefault('alpha', 0.05)
+	silggm_args.setdefault('global', True)
+
+	# Ensure alpha is an R numeric vector
+	alpha = silggm_args['alpha']
+	if isinstance(alpha, (list, tuple, np.ndarray)):
+		silggm_args['alpha'] = FloatVector(alpha)
+		alphas = list(alpha)
+	else:
+		alphas = [alpha]
 
 	robjects.r('sink("/dev/null")')
 	try:
-		result = silggm.SILGGM(r_matrix, method=method, alpha=alpha, **{'lambda': lambda_}, **{'global': True})
+		result = silggm.SILGGM(X_r, method=method, **silggm_args)
 	finally:
 		robjects.r('sink()')
 
-	A = result.rx2('global_decision')
-	A = robjects.r['as.matrix'](A)
-	with localconverter(robjects.default_converter + numpy2ri.converter):
-		A_numpy = np.array(A)
-	adjacency_matrix = (A_numpy != 0).astype(int)
+	global_decision = result.rx2('global_decision')
 
-	return adjacency_matrix[0]
+	adjacency_matrices = {}
+	for alpha, mat in zip(alphas, global_decision):
+		A = robjects.r['as.matrix'](mat)
+		with localconverter(robjects.default_converter + numpy2ri.converter):
+			A_numpy = np.array(A)
+		adjacency_matrices[float(alpha)] = (A_numpy != 0).astype(int)
 
-#--------------------------------
-# wgcna
-#--------------------------------
-def wgcnaR(X, power=6, type="unsigned", threshold=None):
-	r_matrix = numpy2ri.py2rpy(X)
-
-	if threshold is None:
-		threshold = 0.5
-
-	A = wgcna.adjacency(r_matrix, power=power, type=type)
-	with localconverter(robjects.default_converter + numpy2ri.converter):
-		A_numpy = np.array(A)
-	adjacency_matrix = (A_numpy >= threshold).astype(int)
-	for i in range(adjacency_matrix.shape[0]):
-		adjacency_matrix[i,i] = 0
-
-	return adjacency_matrix
+	if len(alphas) == 1:
+		return adjacency_matrices[alphas[0]]
+	else:
+		return adjacency_matrices
 
 
 
