@@ -106,4 +106,71 @@ plot_args = {
 	'pos': pos
 }
 
+# print features that appear in the plotted graph
+graph_used = G if plot_adjusted_layout else A
+
+# map node --> feature name
+if isinstance(next(iter(graph_used.nodes())), (int,)):
+	node_to_name = {i: feature_names[i] for i in graph_used.nodes()}
+else:
+	node_to_name = {n: n for n in graph_used.nodes()}
+
+# compute radius (shortest path to any target)
+radii = {}
+for node in graph_used.nodes():
+	try:
+		radii[node] = min(
+			nx.shortest_path_length(graph_used, node, t)
+			for t in target_features
+		)
+	except nx.NetworkXNoPath:
+		radii[node] = None
+
+# organize as: radius -> type -> list
+by_radius = {}
+
+for node, raw_name in node_to_name.items():
+	r = radii[node]
+	if r is None:
+		continue
+
+	if r not in by_radius:
+		by_radius[r] = {
+			'Clinical': [],
+			'Gene': [],
+			'miRNA': [],
+			'Protein': []
+		}
+
+	# Classify using RAW name
+	if 'Status' in raw_name or 'Stage' in raw_name or 'Histologic' in raw_name:
+		group = 'Clinical'
+	elif 'miR-' in raw_name or 'let-' in raw_name:
+		group = 'miRNA'
+	elif '(protein)' in raw_name:
+		group = 'Protein'
+	elif '(gene)' in raw_name:
+		group = 'Gene'
+	else:
+		continue
+
+	# Clean label AFTER classification
+	clean_name = raw_name.replace('\n(gene)', '').replace('\n(protein)', '')
+
+	by_radius[r][group].append(clean_name)
+
+
+# Print in the exact format you want
+for r in sorted(by_radius.keys()):
+	print(f'\nRadius {r}')
+	print('-' * 32)
+
+	for group in ['Clinical', 'Gene', 'miRNA', 'Protein']:
+		print(f'\n{group}:')
+		print('-' * 16)
+		for name in sorted(by_radius[r][group]):
+			print(name)
+
+
+
 plot_graph(graph=G if plot_adjusted_layout else A, **plot_args)

@@ -22,7 +22,7 @@ random_seed = 4161932
 np.random.seed(random_seed)
 
 # Graph details
-radius = 1
+radius = 2
 qpath_max = 1
 fdr_local = [0.04, 0.008]
 
