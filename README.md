@@ -4,6 +4,138 @@ This repository accompanies the paper:
 
 **Local graph estimation: Interpretable network discovery for complex data**
 
+It contains all code and data needed to reproduce the analyses, figures, and results presented in the main text and supplementary materials.
+
+Note: This repository is intended to reproduce results in the paper.  
+For a general-use Python package implementing local graph estimation and pathwise feature selection (PFS), see:  
+https://github.com/omelikechi/localgraph
+
+---
+
+## Repository structure
+
+- applications/  
+  Reproducible analyses for all real-data applications in the paper:
+  - `alzheimers/`
+  - `breast_cancer/`
+  - `env_cancer_study/`
+  - `hcp/`
+
+  Each application folder contains:
+  - `run_pfs.py` and `run_methods.py` scripts
+  - preprocessing code in `data/`
+  - enrichment and plotting scripts where applicable
+
+- simulations/  
+  Code for both simulation studies and the illustrative example used in the paper.
+
+- methods/  
+  Wrappers and helper scripts used to run comparison methods.
+
+- additional_figures/  
+  Script for generating the conceptual illustration in the supplement.
+
+- requirements.txt  
+  Python dependencies required to reproduce all experiments.
+
+---
+
+## Installation
+
+We recommend using a virtual environment.
+
+Install all required dependencies with:
+
+pip install -r requirements.txt
+
+This installs:
+- localgraph
+- ipss
+- numpy
+- scipy
+- scikit-learn
+- matplotlib
+- networkx
+- pandas
+- rpy2
+
+Note:
+- Some comparison methods require a working R installation.
+- If R-based methods are used, ensure R is installed and accessible from your system PATH before running the scripts.
+
+---
+
+## Running simulations
+
+From the repository root:
+
+cd simulations
+python simulation.py
+
+Results will be saved to the appropriate results directories.
+
+---
+
+## Running applications
+
+Each application can be run independently. For example:
+
+cd applications/breast_cancer
+python run_pfs.py
+
+Refer to the corresponding folder for preprocessing or alternative method scripts.
+
+---
+
+## Datasets
+
+This repository includes all datasets necessary to reproduce the results in the manuscript, except where noted below.
+
+### County-Level Cancer and Environmental Data
+
+Location: `applications/env_cancer_study/data/`
+
+Includes cleaned datasets used in the paper.  
+Original sources:
+- State Cancer Profiles (NCI and CDC)
+- EPA Environmental Quality Index (EQI)
+- U.S. Census Bureau
+
+### Breast Cancer Multiomic Data
+
+Location: `applications/breast_cancer/data/`
+
+Includes processed data used in the analysis.  
+The raw RNA-seq file is too large for GitHub and must be downloaded separately from:
+
+https://www.linkedomics.org/data_download/TCGA-BRCA/
+
+### Alzheimer’s and HCP Data
+
+Located under their respective application folders in `applications/`.
+
+---
+
+## Questions
+
+For issues related to the method or repository, please contact:
+
+Omar Melikechi  
+omar.melikechi@duke.edu
+
+
+
+
+
+
+
+
+<!-- # Local graph estimation – paper repository
+
+This repository accompanies the paper:
+
+**Local graph estimation: Interpretable network discovery for complex data**
+
 It contains all code, data, and figures needed to reproduce the analyses, figures, and results presented in the main text and supplementary materials.
 
 > ⚠️ **Note:** This repository is intended solely for reproducing the paper. For a general-use Python package implementing local graph estimation and pathwise feature selection (PFS), see: https://github.com/omelikechi/localgraph
@@ -76,3 +208,4 @@ omar.melikechi@gmail.com
 
 
 
+ -->
