@@ -5,7 +5,9 @@ import matplotlib.patches as patches
 import matplotlib.pyplot as plt
 import numpy as np
 
-from methods import hugeR
+import sys, os
+sys.path.insert(0, os.path.abspath('..'))
+from methods import run_method
 from simulate_block import block_graph
 
 #--------------------------------
@@ -23,6 +25,10 @@ random_seed = 168
 np.random.seed(random_seed)
 n = 200
 radius = 3
+
+# eignevalue scaling
+lmin = 0.01
+lmax = 10
 
 # Graph block configuration
 block_sizes = [1, 2, 97]
@@ -43,6 +49,16 @@ method_titles = {
 	'pfs': '(b) Pathwise feature selection',
 	'glasso': '(c) Graphical lasso',
 	'mb': '(d) Nodewise lasso',
+	
+	# bnlearn
+	'aracne':'(d) ARACNE',
+	'fast_iamb':'FastIAMB',
+	'hpc':'HPC',
+	'iamb':'IAMB',
+	'iamb_fdr':'IAMBFDR',
+	'mmpc':'MMPC',
+	'pc_stable':'PC',
+	'si_hiton_pc':'SIHPC',
 }
 
 # Plotting options
@@ -56,8 +72,8 @@ plot_args = {'node_size': 1000, 'font_size': 14, 'edge_font_size': 9, 'edge_widt
 # Generate data
 data = block_graph(
 	n=n, 
-	lmin=0.1, 
-	lmax=100, 
+	lmin=lmin, 
+	lmax=lmax, 
 	block_sizes=block_sizes, 
 	block_degree=block_degree, 
 	block_magnitude=block_magnitude,
@@ -78,15 +94,28 @@ p = X.shape[1]
 lambda_ = 0.9999 * np.max(max_cor_response)
 
 method_configs = {
-	'glasso': {'method': 'glasso', 'lambda_': lambda_},
-	'mb': {'method': 'mb'},
+	# bnlearn
+	'aracne':{},
+	'fast_iamb':{},
+	'hpc':{},
+	'iamb':{},
+	'iamb_fdr':{},
+	'mmpc':{},
+	'pc_stable':{},
+	'si_hiton_pc':{},
+
+	# huge
+	'glasso':{'lambda_': lambda_},
+	'mb':{},
+
+	# pfs
 	'pfs': {
-		'target_features': target_features,
-		'selector': 'l1',
-		'qpath_max': qpath_max,
-		'max_radius': len(fdr_local),
-		'fdr_local': fdr_local,
-		'criterion': 'forward'
+		'target_features':target_features,
+		'selector':'l1',
+		'qpath_max':qpath_max,
+		'max_radius':len(fdr_local),
+		'fdr_local':fdr_local,
+		'criterion':'forward'
 	}
 }
 
@@ -98,12 +127,12 @@ def dict_to_matrix(graph_dict, p):
 		A[j,i] = q
 	return A
 
-def run_method(X, method_name, **kwargs):
+def run_all_methods(method_name, X, **kwargs):
 	if method_name == 'pfs':
 		Q = pfs(X, **kwargs)
 		return dict_to_matrix(Q,p)
 	else:
-		return hugeR(X, **kwargs)
+		return run_method(method_name, X, **kwargs)['adjacency_matrix']
 
 # Run all methods
 results = {}
@@ -117,7 +146,7 @@ for method_name in methods:
 	if method_name == 'truth':
 		results[method_name] = A_true
 	else:
-		A = run_method(X, method_name, **method_configs[method_name])
+		A = run_all_methods(method_name, X, **method_configs[method_name])
 		results[method_name] = A
 		tp_full, fp_full = tp_and_fp(A, A_true, target_features)
 		tp, fp = tp_and_fp(A, A_true, target_features, radius)

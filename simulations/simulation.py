@@ -4,59 +4,75 @@ import logging
 import pickle
 import time
 
-from localgraph import pfs, subgraph_within_radius, tp_and_fp
+from localgraph import pfs, tp_and_fp
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 
-from methods import hugeR, silggmR
+import sys, os
+sys.path.insert(0, os.path.abspath('..'))
+from methods import run_method
 from simulate_block import block_graph
 
-#--------------------------------
+#----------------------------------------------------------------
 # Global settings
-#--------------------------------
+#----------------------------------------------------------------
 ################################
 save_results = False
 ################################
+do_dense = False
+################################
 do_nonlinear = False
 ################################
-file_name = f'simulation_results_nonlinear' if do_nonlinear else 'simulation_results_linear'
+file_name = f'sim_results_nonlinear' if do_nonlinear else 'sim_results_linear'
+file_name += '_dense' if do_dense else ''
+################################
+default_settings = False
 ################################
 
 # random seed list
-random_seed_list = np.arange(1,4)
+random_seed_list = np.arange(1,5)
 
-# simulation parameters
-n = 100
-lmin = 0.01
-lmax = 10
-block_sizes = [1, 4, 195]
-block_degree = [0, 0, 2]
-connector_degree = [4, 2]
-block_magnitude = np.ones(len(block_sizes))
-connector_magnitude = np.ones(len(block_sizes) - 1)
-snr = 4
+#----------------------------------------------------------------
+# Simulation parameters
+#----------------------------------------------------------------
 
-# number of variables is the sum of the block sizes
-p = 0
-for i in block_sizes:
-	p += i
+if default_settings:
 
-# radii at which to evaluate local graph estimation performance
-radii = [1,2]
+	from default_settings import default_settings
+
+	target_type = 'nonlinear' if do_nonlinear else 'linear'
+	sparsity = 'dense' if do_dense else 'sparse'
+	n = 100
+
+	key = f'{target_type}_{sparsity}_n{n}'
+	cfg = default_settings[key].copy()
+	globals().update(cfg)
+
+else:
+	n = 100
+	snr = 4 if do_nonlinear else None
+	block_sizes = [1, 4, 195]
+	p = sum(block_sizes)
+	block_degree = [0, 0, 2]
+	connector_degree = [4, 6]
+	block_magnitude = np.ones(len(block_sizes))
+	connector_magnitude = np.ones(len(block_sizes) - 1)
+	lmin = 0.01
+	lmax = 10
+	radii = [1, 2]
+	qpath_max = 0.2
+	fdr_local = [0.2, 0.1, 0.1, 0.1]
+	fdr = 0.1
+	ipss_selector = 'gb' if do_nonlinear else 'adaptive_lasso' if n > p else 'l1'
 
 # methods to run
-methods = ['truth', 'glasso', 'mb', 'dsnwsl', 'dsgl', 'bnwsl', 'gfcsl', 'gfcl', 'pfs']
+silggm_methods = ['bnwsl', 'dsgl', 'dsnwsl', 'gfcl', 'gfcsl']
+methods = ['inter_iamb_local']
 
-# ipss selector for pfs ('l1': use lasso as base estimator; 'gb': use gradient boosting)
-ipss_selector = 'gb' if do_nonlinear else 'l1'
-
-# false discovery parameters for pfs
-qpath_max = 0.2
-fdr_local = [0.2, 0.05, 0.05, 0.05] if do_nonlinear else [0.2, 0.1, 0.1, 0.1]
-
-# target FDR for other methods
-fdr = 0.1
+# append method names to file name
+file_name += f'_n{n}'
+file_name = f'{file_name}_' + '_'.join(methods)
 
 # simulation metadata, saved in the final output to refer back to
 simulation_metadata = {'n':n, 'p':p, 'snr':snr, 'block_sizes':block_sizes, 'block_degree':block_degree, 'connector_degree':connector_degree,
@@ -67,7 +83,7 @@ simulation_metadata = {'n':n, 'p':p, 'snr':snr, 'block_sizes':block_sizes, 'bloc
 # store results
 all_results = []
 
-# create a nonlinear target if do_nonlinear is True
+# create nonlinear target if do_nonlinear is True
 def nonlinear_target(X, A_true, target, neighbors, snr):
 	signal = np.zeros(X.shape[0])
 	for i in neighbors:
@@ -75,6 +91,11 @@ def nonlinear_target(X, A_true, target, neighbors, snr):
 		A_true[target,i] = A_true[i,target] = 1
 	sigma2 = np.var(signal) / snr
 	X[:,target] = signal + np.random.normal(0, np.sqrt(sigma2), size=n) 
+	# add edges between neighbors of target
+	for i in neighbors:
+		for j in neighbors:
+			if i < j:
+				A_true[i,j] = A_true[j,i] = 1
 	return X, A_true
 
 # convert dictionary of q-values to adjacency matrix
@@ -86,50 +107,66 @@ def dict_to_matrix(graph_dict, p):
 		A[j,i] = q
 	return A
 
-#--------------------------------
+#----------------------------------------------------------------
 # Method configurations
-#--------------------------------
+#----------------------------------------------------------------
 lambda_ = None
-flare_crit = 'stars' # options: cv, stars
 huge_crit = 'ric' # options: ebic, stars, ric
+bnlearn_test = 'mi-g' if do_nonlinear else 'cor'
+criterion = 'forward'
+verbose = False if save_results else True
+
 method_configs = {
-	'bnwsl': {'method':'B_NW_SL', 'alpha':fdr},
-	'dsgl':{'method':'D-S_GL', 'alpha':fdr},
-	'dsnwsl':{'method':'D-S_NW_SL', 'alpha':fdr},
-	'gfcl':{'method':'GFC_L', 'alpha':fdr},
-	'gfcsl':{'method':'GFC_SL', 'alpha':fdr},
-	'glasso':{'method':'glasso', 'sym':'or', 'lambda_':lambda_, 'criterion':huge_crit},
-	'mb':{'method':'mb', 'sym':'or', 'lambda_':None, 'criterion':huge_crit},
+	# bnlearn (global)
+	'aracne':{'mi':'mi-g'},
+	'fast_iamb':{'alpha':fdr, 'test':bnlearn_test},
+	'hpc':{'alpha':fdr, 'test':bnlearn_test},
+	'iamb':{'alpha':fdr, 'test':bnlearn_test},
+	'iamb_fdr':{'alpha':fdr, 'test':bnlearn_test},
+	'inter_iamb_fdr':{'alpha':fdr, 'test':bnlearn_test},
+	'mmpc':{'alpha':fdr, 'test':bnlearn_test},
+	'pc_stable':{'alpha':fdr, 'test':bnlearn_test},
+	'si_hiton_pc':{'alpha':fdr, 'test':bnlearn_test},
+
+	# bnlearn (local)
+	'fast_iamb_local':{'alpha':fdr, 'test':bnlearn_test, 'radius':max(radii), 'criterion':criterion, 'verbose':verbose},
+	'hpc_local':{'alpha':fdr, 'test':bnlearn_test, 'radius':max(radii), 'criterion':criterion, 'verbose':verbose},
+	'iamb_local':{'alpha':fdr, 'test':bnlearn_test, 'radius':max(radii), 'criterion':criterion, 'verbose':verbose},
+	'iamb_fdr_local':{'alpha':fdr, 'test':bnlearn_test, 'radius':max(radii), 'criterion':criterion, 'verbose':verbose},
+	'inter_iamb_local':{'alpha':fdr, 'test':bnlearn_test, 'radius':max(radii), 'criterion':criterion, 'verbose':verbose},
+	'mmpc_local':{'alpha':fdr, 'test':bnlearn_test, 'radius':max(radii), 'criterion':criterion, 'verbose':verbose},
+	'pc_stable_local':{'alpha':fdr, 'test':bnlearn_test, 'radius':max(radii), 'criterion':criterion, 'verbose':verbose},
+	'si_hiton_pc_local':{'alpha':fdr, 'test':bnlearn_test, 'radius':max(radii), 'criterion':criterion, 'verbose':verbose},
+
+	# huge
+	'glasso':{'lambda_':lambda_, 'criterion':huge_crit},
+	'mb':{'lambda_':None, 'criterion':huge_crit},
+
+	# pfs
 	'pfs':{'selector':ipss_selector, 'qpath_max':qpath_max, 'max_radius':max(radii), 
-		'fdr_local':fdr_local, 'criterion':'forward'}
+		'fdr_local':fdr_local, 'criterion':criterion, 'verbose':verbose},
+
+	# silggm
+	'bnwsl':{'alpha':fdr},
+	'dsgl':{'alpha':fdr},
+	'dsnwsl':{'alpha':fdr},
+	'gfcl':{'alpha':fdr},
+	'gfcsl':{'alpha':fdr},
 }
 
-# function that runs methods
-def run_method(X, method_name, **kwargs):
-	method_functions = {
-		'bnwsl': lambda X, kwargs: silggmR(X, **kwargs),
-		'dsgl': lambda X, kwargs: silggmR(X, **kwargs),
-		'dsnwsl': lambda X, kwargs: silggmR(X, **kwargs),
-		'gfcl': lambda X, kwargs: silggmR(X, **kwargs),
-		'gfcsl': lambda X, kwargs: silggmR(X, **kwargs),
-		'glasso': lambda X, kwargs: hugeR(X, **kwargs),
-		'mb': lambda X, kwargs: hugeR(X, **kwargs),
-		'pfs': lambda X, kwargs: pfs(X, **kwargs)
-	}
-	if method_name == 'pfs':
-		Q = method_functions[method_name](X, kwargs)
-		A = dict_to_matrix(Q,p)
-		return A
-	else:
-		return method_functions[method_name](X, kwargs)
+simulation_metadata['method_configs'] = method_configs
 
-#--------------------------------
+#----------------------------------------------------------------
 # Run simulation
-#--------------------------------
+#----------------------------------------------------------------
 if save_results:
 	logging.basicConfig(stream=sys.stdout, level=logging.INFO, format='%(asctime)s - %(message)s')
 
 n_trials = len(random_seed_list)
+
+print(f'Starting {file_name}')
+print(f'----------------------------------------------------------------')
+
 for trial, random_seed in enumerate(random_seed_list):
 
 	if save_results:
@@ -153,12 +190,15 @@ for trial, random_seed in enumerate(random_seed_list):
 
 	# apply nonlinearity; note that in this study, the target feature is always 0
 	if do_nonlinear:
-		X, A_true = nonlinear_target(X, A_true, 0, np.arange(1,block_sizes[1]+1), snr)
+		X, A_true = nonlinear_target(X, A_true, 0, np.arange(1, block_sizes[1]+1), snr)
 
-	X = StandardScaler().fit_transform(X)
+	X = StandardScaler().fit_transform(X)		
 
-	# add target_features to pfs args
+	# add target_features to pfs and bnlearn_local args
 	method_configs['pfs']['target_features'] = target_features
+	for method_name in methods:
+		if '_local' in method_name:
+			method_configs[method_name]['target_features'] = target_features
 
 	for i, method_name in enumerate(methods):
 		if method_name == 'truth':
@@ -166,9 +206,18 @@ for trial, random_seed in enumerate(random_seed_list):
 		else:
 			config = method_configs[method_name]
 			start = time.time()
-			A = run_method(X, method_name, **config)
+
+			if method_name == 'pfs':
+				Q = pfs(X, **config)
+				A = dict_to_matrix(Q,p)
+			else:
+				result = run_method(method_name, X, **config)
+				A = result['adjacency_matrix']
+
 			A = np.maximum(A, A.T)
 			method_time = time.time() - start
+
+			print(f'  {method_name}: {method_time:.2f} seconds')
 
 			# true positives in the full graph
 			n_true_global = np.sum(A_true) // 2
@@ -178,8 +227,9 @@ for trial, random_seed in enumerate(random_seed_list):
 
 			# loop over radii
 			for radius in radii:
-				A_true_local = subgraph_within_radius(A_true, target_features, radius)
-				n_true_local = np.sum(A_true_local) // 2
+				# count true edges eligible under the tp_and_fp definition
+				tp_true, _ = tp_and_fp(A_true, A_true, target_features, radius=radius)
+				n_true_local = tp_true
 
 				tp_local, fp_local = tp_and_fp(A, A_true, target_features, radius=radius)
 				tpr_local = tp_local / max(n_true_local, 1)
@@ -197,9 +247,9 @@ for trial, random_seed in enumerate(random_seed_list):
 					'time_sec': method_time
 				})
 
-#--------------------------------
+#----------------------------------------------------------------
 # Save or print results summary
-#--------------------------------
+#----------------------------------------------------------------
 # convert to dataframe and save
 if save_results:
 	results_package = {
@@ -225,7 +275,7 @@ else:
 			tpr_local_table.loc[r, m] = f"{mean:.2f} ({std:.2f})"
 
 	print("\nLocal TPR (mean (std))")
-	print("------------------------------------------------------------------------------------------------")
+	print("----------------------------------------------------------------")
 	print(tpr_local_table.to_string())
 
 	# Local FDP
@@ -239,5 +289,9 @@ else:
 			fdp_local_table.loc[r, m] = f"{mean:.2f} ({std:.2f})"
 
 	print("\nLocal FDP (mean (std))")
-	print("------------------------------------------------------------------------------------------------")
+	print("----------------------------------------------------------------")
 	print(fdp_local_table.to_string())
+
+print()
+
+

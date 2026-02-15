@@ -19,5 +19,48 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Ignore large raw data file
-breast_cancer/data/raw_data/rnaseq.txt
+# Virtual environments
+venv/
+env/
+*.venv/
+
+# Logs
+*.log
+
+#--------------------------------
+# Ignore large result / output files
+#--------------------------------
+*.graphml
+*.csv
+*.xlsx
+*.mtx
+*.gmt
+*.shp
+*.shx
+*.dbf
+*.tsv
+*.txt
+
+# Ignore all pickle files
+*.pkl
+
+#--------------------------------
+# Ignore heavy data directories
+#--------------------------------
+applications/*/data/raw_data/
+applications/*/data/gene_sets/
+applications/*/data/stringdb/
+simulations/results/
+applications/*/results/
+
+#--------------------------------
+# Keep cleaned_data.pkl generally
+#--------------------------------
+!applications/*/data/cleaned_data/
+!applications/*/data/cleaned_data/cleaned_data.pkl
+
+#--------------------------------
+# EXCEPT Alzheimer (too large)
+#--------------------------------
+applications/alzheimers/data/cleaned_data/cleaned_data.pkl
+
