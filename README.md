@@ -43,17 +43,19 @@ https://github.com/omelikechi/localgraph
 
 Install all required dependencies with:
 
+```
 pip install -r requirements.txt
+```
 
 Note:
 - Some comparison methods require a working R installation.
-- If R-based methods are used, ensure R is installed and accessible from your system PATH before running the scripts.
+- If R-based methods are used, ensure R is installed and accessible from your system path.
 
 ---
 
 ## Datasets
 
-Cleaned datasets used for analysis are available for each application except the Alzheimer's dataset, which exceeds GitHub's capacity.
+Cleaned datasets used for analysis are available for each application except the Alzheimer's dataset, which exceeds GitHub's capacity. Links to the original datasets associated with each application are provided in the paper.
 
 ---
 
