@@ -27,7 +27,7 @@ do_nonlinear = False
 file_name = f'sim_results_nonlinear' if do_nonlinear else 'sim_results_linear'
 file_name += '_dense' if do_dense else ''
 ################################
-default_settings = False
+default_settings = True
 ################################
 
 # random seed list
@@ -67,8 +67,7 @@ else:
 	ipss_selector = 'gb' if do_nonlinear else 'adaptive_lasso' if n > p else 'l1'
 
 # methods to run
-silggm_methods = ['bnwsl', 'dsgl', 'dsnwsl', 'gfcl', 'gfcsl']
-methods = ['inter_iamb_local']
+methods = ['aracne']
 
 # append method names to file name
 file_name += f'_n{n}'
@@ -114,7 +113,7 @@ lambda_ = None
 huge_crit = 'ric' # options: ebic, stars, ric
 bnlearn_test = 'mi-g' if do_nonlinear else 'cor'
 criterion = 'forward'
-verbose = False if save_results else True
+verbose = False
 
 method_configs = {
 	# bnlearn (global)
