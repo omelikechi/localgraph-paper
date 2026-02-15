@@ -6,7 +6,7 @@ This repository accompanies the paper:
 
 It contains all code and data needed to reproduce the analyses, figures, and results presented in the main text and supplementary materials.
 
-Note: This repository is intended to reproduce results in the paper.  
+> **Note:** This repository is intended to reproduce results in the paper.  
 For a general-use Python package implementing local graph estimation and pathwise feature selection (PFS), see:  
 https://github.com/omelikechi/localgraph
 
@@ -42,22 +42,9 @@ https://github.com/omelikechi/localgraph
 
 ## Installation
 
-We recommend using a virtual environment.
-
 Install all required dependencies with:
 
 pip install -r requirements.txt
-
-This installs:
-- localgraph
-- ipss
-- numpy
-- scipy
-- scikit-learn
-- matplotlib
-- networkx
-- pandas
-- rpy2
 
 Note:
 - Some comparison methods require a working R installation.
