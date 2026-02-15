@@ -31,7 +31,7 @@ default_settings = False
 ################################
 
 # random seed list
-random_seed_list = np.arange(1,5)
+random_seed_list = np.arange(1,101)
 
 #----------------------------------------------------------------
 # Simulation parameters
