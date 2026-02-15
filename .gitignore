@@ -54,13 +54,17 @@ simulations/results/
 applications/*/results/
 
 #--------------------------------
-# Keep cleaned_data.pkl generally
+# Keep cleaned_data generally
 #--------------------------------
 !applications/*/data/cleaned_data/
 !applications/*/data/cleaned_data/cleaned_data.pkl
+!applications/*/data/cleaned_data/cleaned_data.csv
 
 #--------------------------------
 # EXCEPT Alzheimer (too large)
 #--------------------------------
 applications/alzheimers/data/cleaned_data/cleaned_data.pkl
+
+
+
 
