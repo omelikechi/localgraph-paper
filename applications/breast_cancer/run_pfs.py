@@ -7,10 +7,10 @@
 """
 
 import pickle
-import numpy as np
-import pandas as pd
 
 from localgraph import pfs
+import numpy as np
+import pandas as pd
 
 #--------------------------------
 # Setup
@@ -87,7 +87,7 @@ for random_seed in random_seed_list:
 		custom_nbhd=custom_nbhd,
 		feature_names=feature_names,
 		max_radius=radius,
-		ipss_args=ipss_args,
+		method_args=ipss_args,
 		verbose=True
 	)
 

@@ -4,15 +4,16 @@
 - Covariates: genes (RNAseq), proteins (RPPA), and microRNAs
 """
 
-from localgraph import max_cor_response, plot_graph, restrict_to_local_graph
+from localgraph import plot_graph, restrict_to_local_graph
 import numpy as np
 import pandas as pd
 import pickle
 from sklearn.preprocessing import StandardScaler
 
 import sys, os
-sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath('../..'))
 from methods import run_method
+from utils import max_cor_response
 
 #----------------------------------------------------------------
 # Setup
@@ -23,9 +24,9 @@ plot_result = True
 random_seed = 11201959
 np.random.seed(random_seed)
 
-drop_feature_types = ['rnaseq', 'mirna']
+drop_feature_types = []
 
-methods_to_run = ['fast_iamb_local']
+methods_to_run = ['glasso']
 
 apply_npn = False
 max_cor_lambda = False

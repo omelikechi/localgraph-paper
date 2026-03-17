@@ -1,6 +1,6 @@
 # Simulation illustration for comparing truth, PFS, graphical lasso, and nodewise lasso (Figures 1a–1d)
 
-from localgraph import pfs, plot_graph, subgraph_within_radius, tp_and_fp
+from localgraph import pfs, plot_graph, restrict_to_local_graph, tp_and_fp
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt
 import numpy as np
@@ -111,7 +111,7 @@ method_configs = {
 	# pfs
 	'pfs': {
 		'target_features':target_features,
-		'selector':'l1',
+		'method_args':{'selector':'l1'},
 		'qpath_max':qpath_max,
 		'max_radius':len(fdr_local),
 		'fdr_local':fdr_local,
@@ -158,7 +158,7 @@ for method_name in methods:
 # Plot estimated graphs
 #--------------------------------
 if show_graphs:
-	A_true_local = subgraph_within_radius(A_true, target_features, radius)
+	A_true_local = restrict_to_local_graph(A_true, target_features, radius, return_matrix=True)
 	rows = (len(methods) + cols - 1) // cols
 	fig, axes = plt.subplots(rows, cols, figsize=figsize)
 	axes = axes.flatten()
@@ -186,3 +186,5 @@ if show_graphs:
 	if save_plot:
 		plt.savefig(f"{fig_name}.png", dpi=dpi)
 	plt.show()
+
+

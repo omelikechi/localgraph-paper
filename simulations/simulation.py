@@ -22,7 +22,7 @@ save_results = False
 ################################
 do_dense = False
 ################################
-do_nonlinear = False
+do_nonlinear = True
 ################################
 file_name = f'sim_results_nonlinear' if do_nonlinear else 'sim_results_linear'
 file_name += '_dense' if do_dense else ''
@@ -31,12 +31,11 @@ default_settings = True
 ################################
 
 # random seed list
-random_seed_list = np.arange(1,101)
+random_seed_list = np.arange(1,3)
 
 #----------------------------------------------------------------
 # Simulation parameters
 #----------------------------------------------------------------
-
 if default_settings:
 
 	from default_settings import default_settings
@@ -67,7 +66,7 @@ else:
 	ipss_selector = 'gb' if do_nonlinear else 'adaptive_lasso' if n > p else 'l1'
 
 # methods to run
-methods = ['aracne']
+methods = ['pfs']
 
 # append method names to file name
 file_name += f'_n{n}'
@@ -113,6 +112,7 @@ lambda_ = None
 huge_crit = 'ric' # options: ebic, stars, ric
 bnlearn_test = 'mi-g' if do_nonlinear else 'cor'
 criterion = 'forward'
+ipss_args = {'selector':ipss_selector}
 verbose = False
 
 method_configs = {
@@ -142,7 +142,7 @@ method_configs = {
 	'mb':{'lambda_':None, 'criterion':huge_crit},
 
 	# pfs
-	'pfs':{'selector':ipss_selector, 'qpath_max':qpath_max, 'max_radius':max(radii), 
+	'pfs':{'method_args':ipss_args, 'qpath_max':qpath_max, 'max_radius':max(radii), 
 		'fdr_local':fdr_local, 'criterion':criterion, 'verbose':verbose},
 
 	# silggm

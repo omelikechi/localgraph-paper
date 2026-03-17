@@ -1,7 +1,11 @@
-# Analyze simulation results and append new methods (safe version)
+# Analyze simulation results and append new methods
 
 import pickle
 import pandas as pd
+
+import sys
+sys.path.append('./qvalue_comparison')
+import qvalue_methods
 
 #--------------------------------
 # Settings
@@ -12,7 +16,7 @@ n = 500
 
 simulation_type = 'nonlinear' if do_nonlinear else 'linear'
 
-new_methods = ['hpc_local_mmpc_local_si_hiton_pc_local']
+new_methods = ['pfs_kol1_pfs_koglm']
 
 if do_dense:
 	old_file = f'./results/sim_results_{simulation_type}_dense_n{n}.pkl'

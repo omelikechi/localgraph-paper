@@ -5,20 +5,21 @@
 """
 
 # from graph_estimation.methods import run_method
-from localgraph import max_cor_response, pfs, plot_graph, restrict_to_local_graph
+from localgraph import pfs, plot_graph, restrict_to_local_graph
 import numpy as np
 import pandas as pd
 import pickle
 from sklearn.preprocessing import StandardScaler
 
 import sys, os
-sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath('../..'))
 from methods import run_method
+from utils import max_cor_response
 
 #----------------------------------------------------------------
 # Setup
 #----------------------------------------------------------------
-save_result = True
+save_result = False
 plot_result = True
 
 random_seed = 4161932

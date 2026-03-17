@@ -7,7 +7,7 @@
 import pickle
 import re
 
-from localgraph import max_cor_response, plot_graph, restrict_to_local_graph
+from localgraph import plot_graph, restrict_to_local_graph
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
@@ -15,17 +15,18 @@ from sklearn.preprocessing import StandardScaler
 import sys, os
 sys.path.insert(0, os.path.abspath('../..'))
 from methods import run_method, method_type, bnlearn_methods, bnlearn_local_methods, huge_methods, silggm_methods
+from utils import max_cor_response
 
 #----------------------------------------------------------------
 # Setup
 #----------------------------------------------------------------
-save_result = True
+save_result = False
 plot_result = True
 
 random_seed = 302
 np.random.seed(random_seed)
 
-methods_to_run = ['mmpc_local']
+methods_to_run = ['glasso']
 apply_npn = False
 max_cor_lambda = False
 max_radius = 3

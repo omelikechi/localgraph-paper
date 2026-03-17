@@ -2,15 +2,16 @@
 """
 - Targets: Age-adjusted cancer incidence and mortality rates (all cancers)
 - Covariates: environmental exposures, socioeconomic factors, and demographics
-- Note: PFS is a stochastic algorithm, so results may vary slightly across machines
+- Note: PFS is a stochastic algorithm, so results may vary across machines
 	even when using the same random seed.
 """
 
-import numpy as np
-import matplotlib.pyplot as plt
 import pickle
-import pandas as pd
+
 from localgraph import pfs, plot_graph
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 
 #--------------------------------
 # Setup
@@ -56,8 +57,8 @@ target_features = [feature_names.index(name) for name in ['Mortality', 'Incidenc
 #--------------------------------
 # Run PFS
 #--------------------------------
-ipss_selector = 'rf'
-Q = pfs(X, target_features, qpath_max=qpath_max, fdr_local=fdr_local, max_radius=radius, selector=ipss_selector, 
+ipss_args = {'selector':'rf'}
+Q = pfs(X, target_features, qpath_max=qpath_max, fdr_local=fdr_local, max_radius=radius, method_args=ipss_args, 
 		custom_nbhd=custom_nbhd, feature_names=feature_names, verbose=True)
 
 result = {'random_seed':random_seed, 'response_names':['Mortality',  'Incidence'], 'feature_names':feature_names, 

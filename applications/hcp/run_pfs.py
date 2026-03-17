@@ -6,13 +6,12 @@
 - Purpose: estimate local dependency structure around cognition using PFS
 """
 
-import time
-
 from collections import defaultdict
 import pickle
-import numpy as np
+import time
 
 from localgraph import pfs
+import numpy as np
 
 #--------------------------------
 # Setup
@@ -37,7 +36,7 @@ age_adjusted = data['age_adjusted']
 n, p = X.shape
 
 print(f'n = {n}')
-print(f'p = {p}')
+print(f'p = {p}\n')
 
 #----------------------------------------------------------------
 # PFS arguments
@@ -74,7 +73,7 @@ Q = pfs(
 	fdr_local=fdr_local,
 	feature_names=feature_names,
 	max_radius=radius,
-	ipss_args=ipss_args,
+	method_args=ipss_args,
 	verbose=True
 )
 runtime = time.time() - start

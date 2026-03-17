@@ -3,7 +3,7 @@
 import pickle
 import re
 
-from localgraph import max_cor_response, plot_graph, restrict_to_local_graph
+from localgraph import plot_graph, restrict_to_local_graph
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
@@ -11,6 +11,7 @@ from sklearn.preprocessing import StandardScaler
 import sys, os
 sys.path.insert(0, os.path.abspath('../..'))
 from methods import run_method, silggm_methods
+from utils import max_cor_response
 
 #----------------------------------------------------------------
 # Setup
@@ -91,9 +92,7 @@ for method_name in methods_to_run:
 		result = run_method(method_name, X, **method_args)
 		A = result['adjacency_matrix']
 		if max_radius is not None:
-			result['adjacency_matrix'] = restrict_to_local_graph(
-				A, target_features, max_radius
-			)
+			result['adjacency_matrix'] = restrict_to_local_graph(A, target_features, max_radius)
 		runtime = result['runtime']
 		print(f'Runtime: {runtime:.2f} seconds')
 

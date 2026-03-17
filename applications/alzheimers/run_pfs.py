@@ -9,15 +9,17 @@ Resources:
 - DOI: doi:10.1038/s41593-019-0539-4
 """ 
 
-import numpy as np
 import pickle
 import time
+
 from localgraph import pfs
+import numpy as np
+
 
 #----------------------------------------------------------------
 # Setup
 #----------------------------------------------------------------
-save_result = True
+save_result = False
 show_result = True
 
 random_seed = 6261928

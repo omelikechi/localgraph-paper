@@ -11,11 +11,11 @@ Methods that timed out:
 """
 
 ################################
-do_nonlinear = True
+do_nonlinear = False
 ################################
-do_dense = True
+do_dense = False
 ################################
-n = 500
+n = 100
 ################################
 
 simulation_type = 'nonlinear' if do_nonlinear else 'linear'
@@ -27,7 +27,7 @@ else:
 	file_name = f'./results/sim_results_{simulation_type}_n{n}.pkl'
 
 show_stdev = False
-blue_text = True
+blue_text = False
 
 #--------------------------------
 # Load results

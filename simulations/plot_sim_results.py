@@ -1,10 +1,12 @@
+# Plot PFS results as a function of sample size n
+
 import pickle
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
 ################################
-save_fig = True
+save_fig = False
 ################################
 
 #----------------------------------------------------------------
