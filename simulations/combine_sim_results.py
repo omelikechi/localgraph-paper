@@ -10,13 +10,13 @@ import qvalue_methods
 #--------------------------------
 # Settings
 #--------------------------------
-do_nonlinear = True
+do_nonlinear = False
 do_dense = True
-n = 500
+n = 100
 
 simulation_type = 'nonlinear' if do_nonlinear else 'linear'
 
-new_methods = ['pfs_kol1_pfs_koglm']
+new_methods = ['pfs_by']
 
 if do_dense:
 	old_file = f'./results/sim_results_{simulation_type}_dense_n{n}.pkl'
@@ -33,6 +33,7 @@ with open(old_file, 'rb') as f:
 
 metadata = old_package['metadata']
 df_old = pd.DataFrame(old_package['results'])
+df_old = df_old[~df_old['method'].isin(new_methods)]
 
 dfs_new = []
 

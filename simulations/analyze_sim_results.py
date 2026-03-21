@@ -11,11 +11,11 @@ Methods that timed out:
 """
 
 ################################
-do_nonlinear = False
+do_nonlinear = True
 ################################
-do_dense = False
+do_dense = True
 ################################
-n = 100
+n = 500
 ################################
 
 simulation_type = 'nonlinear' if do_nonlinear else 'linear'
