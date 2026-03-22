@@ -1,6 +1,6 @@
 # Human connectome data analysis
 
-This folder contains code and data for reproducing the human connectome and cognition analysis in [*Local graph estimation: Interpretable network discovery for complex data*](https://github.com/omelikechi/localgraph-paper).
+This folder contains code and data for reproducing the human connectome and cognition analysis (Section 6).
 
 ---
 

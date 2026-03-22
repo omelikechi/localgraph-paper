@@ -1,6 +1,6 @@
 # Alzheimer's disease data analysis
 
-This folder contains code and data for reproducing the Alzheimer's disease (AD) analysis in [*Local graph estimation: Interpretable network discovery for complex data*](https://github.com/omelikechi/localgraph-paper).
+This folder contains code and data for reproducing the Alzheimer's disease (AD) analysis (Section 7).
 
 ---
 

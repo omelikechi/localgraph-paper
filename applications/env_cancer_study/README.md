@@ -1,6 +1,6 @@
 # Environmental and social drivers of cancer
 
-This folder contains code and data for reproducing the county-level cancer analysis in [*Local graph estimation: Interpretable network discovery for complex data*](https://github.com/omelikechi/localgraph-paper).
+This folder contains code and data for reproducing the county-level cancer analysis (Section 4).
 
 ---
 

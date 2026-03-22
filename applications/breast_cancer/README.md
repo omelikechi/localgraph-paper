@@ -1,6 +1,6 @@
 # TCGA breast cancer analysis
 
-This folder contains code and data for reproducing the breast cancer analysis in [*Local graph estimation: Interpretable network discovery for complex data*](https://github.com/omelikechi/localgraph-paper). The analysis applies pathwise feature selection (PFS) to a combintion of gene (RNAseq), miRNA, and protein (RPPA) data from The Cancer Genome Atlas (TCGA) to uncover local structures associated with clinical outcomes in breast cancer patients.
+This folder contains code and data for reproducing the breast cancer analysis (Section 5).
 
 ---
 
