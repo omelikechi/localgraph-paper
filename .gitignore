@@ -52,6 +52,7 @@ applications/*/data/gene_sets/
 applications/*/data/stringdb/
 simulations/results/
 applications/*/results/
+applications/breast_cancer/mofa.py
 
 #--------------------------------
 # Keep cleaned_data generally

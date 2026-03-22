@@ -6,14 +6,15 @@ This folder contains code and data for reproducing the breast cancer analysis in
 
 ## Contents
 
+- `data/`: Raw and cleaned data files, scripts for data cleaning, and gene set from [MSigDB](https://www.gsea-msigdb.org/gsea/msigdb)
+- `enrichment/`: Scripts for gene and protein enrichment analyses
 - `run_pfs.py`: Main script for applying PFS to the breast cancer data
 - `figures/`: Reproduce figures from the paper (local graph around target features)
-- `data/`: Contains raw and cleaned data
 - `results/`: Contains outputs from `run_pfs.py` and from other methods
 
 ---
 
-## Data Overview
+<!-- ## Data Overview
 
 **Source:** [LinkedOmics: TCGA-BRCA](https://www.linkedomics.org/data_download/TCGA-BRCA/)
 
@@ -23,9 +24,9 @@ This folder contains code and data for reproducing the breast cancer analysis in
 - `rppa.txt`: Protein expression (RPPA, normalized signal)  
 - `clinical.txt`: Clinical metadata (including status, stage, histological type)  
 
-**Note:** `rnaseq.txt` exceeds GitHub’s 100MB file limit and is not included in the public repo but can be downloaded for free from the [LinkedOmics](https://www.linkedomics.org/#/).
+**Note:** `rnaseq.txt` exceeds GitHub’s 100MB file limit and is not included in the public repo but can be downloaded for free from LinkoedOmics. -->
 
-### Cleaned data (`data/cleaned_data/`)
+<!-- ### Cleaned data (`data/cleaned_data/`)
 - `cleaned_data.csv`: Final dataset including the three target clinical variables (histological type, pathologic stage, status) followed by all filtered features across RNA, miRNA, and protein modalities. Feature names are preserved in the header row.
 
 **Filtering steps:**
@@ -41,7 +42,7 @@ This folder contains code and data for reproducing the breast cancer analysis in
 - Final feature matrix: 547 samples × 10,741 features  
 - Clinical targets: 547 samples × 3 targets
 
----
+--- -->
 
 <!-- ## PFS Implementation
 
@@ -61,13 +62,13 @@ This folder contains code and data for reproducing the breast cancer analysis in
 
 --- -->
 
-## Results
+<!-- ## Results
 
 - `breast_cancer_pfs_results.pkl`: Main output from `run_pfs.py`  
 - `adjusted_graph.graphml`: Graph with node positions manually adjusted for visibility (used for Figure 4)  
 
----
+--- -->
 
 ## Notes
-
-PFS is a stochastic algorithm, and results may vary slightly across different machines even when using the same random seed. On a single machine, results are deterministic across runs with a fixed seed.
+- The RNAseq data file exceeds GitHub’s 100MB file limit and is not included in the public repo. However, it can be downloaded for free from [LinkedOmics](https://www.linkedomics.org/data_download/TCGA-BRCA/).
+- PFS is a stochastic algorithm, and results may vary slightly across different machines even when using the same random seed. On a single machine, results are deterministic across runs with a fixed seed.
