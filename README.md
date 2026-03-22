@@ -2,8 +2,8 @@
 
 This repository accompanies the paper:
 
-**Local graph estimation: Interpretable network discovery for complex data** 
-[arXiv](https://doi.org/10.48550/arXiv.2507.17172)
+**Local graph estimation: Interpretable network discovery for complex data**<br>
+[[arXiv]](https://doi.org/10.48550/arXiv.2507.17172)
 
 It contains all code and data needed to reproduce the analyses, figures, and results presented in the main text and supplementary materials.
 

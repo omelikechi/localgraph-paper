@@ -1,15 +1,15 @@
 # TCGA breast cancer analysis
 
-This folder contains code and data for reproducing the breast cancer analysis in Section 4 of [*Local graph estimation: Interpretable network discovery for complex data*](https://github.com/omelikechi/localgraph-paper). The analysis applies pathwise feature selection (PFS) to a combintion of gene (RNAseq), miRNA, and protein (RPPA) data from The Cancer Genome Atlas (TCGA) to uncover interpretable local graphical structures associated with clinical outcomes in breast cancer patients.
+This folder contains code and data for reproducing the breast cancer analysis in [*Local graph estimation: Interpretable network discovery for complex data*](https://github.com/omelikechi/localgraph-paper). The analysis applies pathwise feature selection (PFS) to a combintion of gene (RNAseq), miRNA, and protein (RPPA) data from The Cancer Genome Atlas (TCGA) to uncover local structures associated with clinical outcomes in breast cancer patients.
 
 ---
 
 ## Contents
 
 - `run_pfs.py`: Main script for applying PFS to the breast cancer data
-- `figures/plot_pfs_results.py`: Reproduces **Figure 4** from the paper (local graph around target features)
-- `data/`: Contains raw and cleaned multiomics data
-- `results/`: Contains output from `run_pfs.py`, including the final estimated graph
+- `figures/`: Reproduce figures from the paper (local graph around target features)
+- `data/`: Contains raw and cleaned data
+- `results/`: Contains outputs from `run_pfs.py` and from other methods
 
 ---
 
@@ -23,7 +23,7 @@ This folder contains code and data for reproducing the breast cancer analysis in
 - `rppa.txt`: Protein expression (RPPA, normalized signal)  
 - `clinical.txt`: Clinical metadata (including status, stage, histological type)  
 
-**Note:** `rnaseq.txt` exceeds GitHub’s 100MB file limit and is not included in the public repo. Please download it separately from the LinkedOmics website or request a copy.
+**Note:** `rnaseq.txt` exceeds GitHub’s 100MB file limit and is not included in the public repo but can be downloaded for free from the [LinkedOmics](https://www.linkedomics.org/#/).
 
 ### Cleaned data (`data/cleaned_data/`)
 - `cleaned_data.csv`: Final dataset including the three target clinical variables (histological type, pathologic stage, status) followed by all filtered features across RNA, miRNA, and protein modalities. Feature names are preserved in the header row.
@@ -43,7 +43,7 @@ This folder contains code and data for reproducing the breast cancer analysis in
 
 ---
 
-## PFS Implementation
+<!-- ## PFS Implementation
 
 - Base selector: Gradient boosting (XGBoost)  
 - Number of subsamples: `B = 200`  
@@ -59,7 +59,7 @@ This folder contains code and data for reproducing the breast cancer analysis in
   - Radius 2: `0.0175`
 - Neighborhood threshold for cross-modal edges: `0.035`
 
----
+--- -->
 
 ## Results
 
