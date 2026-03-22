@@ -51,6 +51,7 @@ applications/*/data/raw_data/
 applications/*/data/gene_sets/
 applications/*/data/stringdb/
 applications/breast_cancer/mofa.py
+simulations/combine_sim_results.py
 
 #--------------------------------
 # Allow simulation results
