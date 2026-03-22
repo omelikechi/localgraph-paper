@@ -50,8 +50,19 @@ env/
 applications/*/data/raw_data/
 applications/*/data/gene_sets/
 applications/*/data/stringdb/
-simulations/results/
 applications/breast_cancer/mofa.py
+
+#--------------------------------
+# Allow simulation results
+#--------------------------------
+!simulations/results/
+!simulations/results/*.pkl
+
+#--------------------------------
+# Hide old/extra sim results
+#--------------------------------
+simulations/results/old/
+simulations/results/extra/
 
 #--------------------------------
 # Keep cleaned_data generally
