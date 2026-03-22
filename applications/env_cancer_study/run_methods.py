@@ -4,15 +4,17 @@
 - Covariates: environmental exposures, socioeconomic factors, and demographics
 """
 
-# from graph_estimation.methods import run_method
+import pickle
+import sys
+
 from localgraph import pfs, plot_graph, restrict_to_local_graph
 import numpy as np
 import pandas as pd
-import pickle
 from sklearn.preprocessing import StandardScaler
 
-import sys, os
-sys.path.insert(0, os.path.abspath('../..'))
+from pathlib import Path
+BASE_DIR = Path(__file__).parent
+sys.path.insert(0, str(BASE_DIR.parent.parent))
 from methods import run_method
 from utils import max_cor_response
 
@@ -25,7 +27,7 @@ plot_result = True
 random_seed = 4161932
 np.random.seed(random_seed)
 
-methods_to_run = ['hpc_local']
+methods_to_run = ['aracne']
 
 apply_npn = False
 max_cor_lambda = False
@@ -36,7 +38,8 @@ bnlearn_fdr = 0.05
 #----------------------------------------------------------------
 # Load cleaned data
 #----------------------------------------------------------------
-df = pd.read_csv(f'./data/cleaned_data/cleaned_data.csv')
+data_path = BASE_DIR / 'data' / 'cleaned_data' / 'cleaned_data.csv'
+df = pd.read_csv(f'{data_path}')
 X_raw = df.to_numpy()
 feature_names = df.columns.tolist()
 target_features = [feature_names.index(name) for name in ['Mortality', 'Incidence']]
@@ -178,7 +181,7 @@ for method_name in methods_to_run:
 		result['target_features'] = target_features
 		result['feature_names'] = feature_names
 		result['apply_npn'] = apply_npn
-		with open(filename, "wb") as f:
+		with open(BASE_DIR / 'results' / filename, "wb") as f:
 			pickle.dump(result, f)
 		print(f"Saved result to {filename}")
 

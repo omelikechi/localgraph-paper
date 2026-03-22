@@ -7,10 +7,15 @@
 """
 
 import pickle
+import sys
 
 from localgraph import pfs
 import numpy as np
 import pandas as pd
+
+from pathlib import Path
+BASE_DIR = Path(__file__).parent
+sys.path.insert(0, str(BASE_DIR.parent.parent))
 
 #--------------------------------
 # Setup
@@ -23,7 +28,7 @@ random_seed_list = [11201959]
 #--------------------------------
 # Load data
 #--------------------------------
-data_path = 'data/cleaned_data/cleaned_data.csv'
+data_path = BASE_DIR / 'data' / 'cleaned_data' / 'cleaned_data.csv'
 df = pd.read_csv(data_path)
 
 target_names = ['histological_type', 'pathologic_stage', 'status']
@@ -96,7 +101,7 @@ for random_seed in random_seed_list:
 	#--------------------------------
 	if save_result:
 		file_name = f'bc_pfs_r{radius}_{random_seed}'
-		with open(f'{file_name}.pkl', 'wb') as f:
+		with open(BASE_DIR / 'results' / file_name, "wb") as f:
 			pickle.dump(result, f)
 
 	#--------------------------------

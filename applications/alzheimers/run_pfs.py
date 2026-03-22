@@ -10,11 +10,15 @@ Resources:
 """ 
 
 import pickle
+import sys
 import time
 
 from localgraph import pfs
 import numpy as np
 
+from pathlib import Path
+BASE_DIR = Path(__file__).parent
+sys.path.insert(0, str(BASE_DIR.parent.parent))
 
 #----------------------------------------------------------------
 # Setup
@@ -36,7 +40,7 @@ fdr_local = [0.025, 0.025, 0.03, 0.05]
 #----------------------------------------------------------------
 # Load data
 #----------------------------------------------------------------
-with open('./data/cleaned_data/cleaned_data.pkl', 'rb') as f:
+with open(BASE_DIR / 'data' / 'cleaned_data' / 'cleaned_data.pkl', 'rb') as f:
 	data = pickle.load(f)
 
 X = data['X']
@@ -130,7 +134,7 @@ if save_result:
 	}
 
 	out_path = f'pfs_ad_{cell_type}.pkl'
-	with open(out_path, 'wb') as f:
+	with open(BASE_DIR / 'results' / out_path, "wb") as f:
 		pickle.dump(result, f)
 
 	print(f'\nSaved result to {out_path}')

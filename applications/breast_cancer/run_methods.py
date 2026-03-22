@@ -4,14 +4,17 @@
 - Covariates: genes (RNAseq), proteins (RPPA), and microRNAs
 """
 
+import pickle
+import sys
+
 from localgraph import plot_graph, restrict_to_local_graph
 import numpy as np
 import pandas as pd
-import pickle
 from sklearn.preprocessing import StandardScaler
 
-import sys, os
-sys.path.insert(0, os.path.abspath('../..'))
+from pathlib import Path
+BASE_DIR = Path(__file__).parent
+sys.path.insert(0, str(BASE_DIR.parent.parent))
 from methods import run_method
 from utils import max_cor_response
 
@@ -26,7 +29,7 @@ np.random.seed(random_seed)
 
 drop_feature_types = []
 
-methods_to_run = ['glasso']
+methods_to_run = ['aracne']
 
 apply_npn = False
 max_cor_lambda = False
@@ -40,7 +43,8 @@ silggm_methods = ['bnwsl', 'dsgl', 'dsnwsl', 'gfcl', 'gfcsl']
 #----------------------------------------------------------------
 # Load cleaned data
 #----------------------------------------------------------------
-df = pd.read_csv(f'./data/cleaned_data/cleaned_data.csv')
+data_path = BASE_DIR / 'data' / 'cleaned_data' / 'cleaned_data.csv'
+df = pd.read_csv(data_path)
 
 if drop_feature_types:
 	mask = np.ones(len(df.columns), dtype=bool)
@@ -206,7 +210,7 @@ for method_name in methods_to_run:
 		result['target_features'] = target_features
 		result['feature_names'] = feature_names
 		result['apply_npn'] = apply_npn
-		with open(filename, "wb") as f:
+		with open(BASE_DIR / 'results' / filename, "wb") as f:
 			pickle.dump(result, f)
 		print(f"Saved result to {filename}")
 

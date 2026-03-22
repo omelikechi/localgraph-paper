@@ -8,10 +8,15 @@
 
 from collections import defaultdict
 import pickle
+import sys
 import time
 
 from localgraph import pfs
 import numpy as np
+
+from pathlib import Path
+BASE_DIR = Path(__file__).parent
+sys.path.insert(0, str(BASE_DIR.parent.parent))
 
 #--------------------------------
 # Setup
@@ -25,7 +30,7 @@ np.random.seed(random_seed)
 #----------------------------------------------------------------
 # Load data
 #----------------------------------------------------------------
-with open('./data/cleaned_data/cleaned_data.pkl', 'rb') as f:
+with open(BASE_DIR / 'data' / 'cleaned_data' / 'cleaned_data.pkl', 'rb') as f:
 	data = pickle.load(f)
 
 X = data['X']
@@ -41,11 +46,11 @@ print(f'p = {p}\n')
 #----------------------------------------------------------------
 # PFS arguments
 #----------------------------------------------------------------
-radius = 4
+radius = 3
 qpath_max = 0.25
-fdr_local = [0.15, 0.03, 0.03, 0.05]
+fdr_local = [0.15, 0.03, 0.03]
 
-ipss_args = {'B': 200}
+ipss_args = {'B':100}
 
 #----------------------------------------------------------------
 # Prepare result container
@@ -156,7 +161,7 @@ if show_result:
 #----------------------------------------------------------------
 if save_result:
 	out_path = 'pfs_hcp_result_new.pkl'
-	with open(out_path, 'wb') as f:
+	with open(BASE_DIR / 'results' / out_path, "wb") as f:
 		pickle.dump(result, f)
 
 	print(f'Saved PFS result to {out_path}')

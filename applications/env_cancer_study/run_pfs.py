@@ -7,11 +7,16 @@
 """
 
 import pickle
+import sys
 
 from localgraph import pfs, plot_graph
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+
+from pathlib import Path
+BASE_DIR = Path(__file__).parent
+sys.path.insert(0, str(BASE_DIR.parent.parent))
 
 #--------------------------------
 # Setup
@@ -48,8 +53,8 @@ custom_nbhd = {}
 #--------------------------------
 # Load cleaned data
 #--------------------------------
-data_dir = 'data/cleaned_data'
-df = pd.read_csv(f'{data_dir}/cleaned_data.csv')
+data_path = BASE_DIR / 'data' / 'cleaned_data' / 'cleaned_data.csv'
+df = pd.read_csv(f'{data_path}')
 X = df.to_numpy()
 feature_names = df.columns.tolist()
 target_features = [feature_names.index(name) for name in ['Mortality', 'Incidence']]
@@ -75,7 +80,7 @@ result['radius'] = radius
 #--------------------------------
 if save_result:
 	output_path = f'results/env_cancer_pfs_results.pkl'
-	with open(output_path, 'wb') as f:
+	with open(BASE_DIR / 'results' / output_path, "wb") as f:
 		pickle.dump(result, f)
 
 #--------------------------------

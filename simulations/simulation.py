@@ -2,6 +2,7 @@
 
 import logging
 import pickle
+import sys
 import time
 
 from localgraph import pfs, tp_and_fp
@@ -9,8 +10,9 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 
-import sys, os
-sys.path.insert(0, os.path.abspath('..'))
+from pathlib import Path
+BASE_DIR = Path(__file__).parent
+sys.path.insert(0, str(BASE_DIR.parent))
 from methods import run_method
 from simulate_block import block_graph
 
@@ -22,7 +24,7 @@ save_results = False
 ################################
 do_dense = False
 ################################
-do_nonlinear = True
+do_nonlinear = False
 ################################
 file_name = f'sim_results_nonlinear' if do_nonlinear else 'sim_results_linear'
 file_name += '_dense' if do_dense else ''
@@ -31,7 +33,7 @@ default_settings = True
 ################################
 
 # random seed list
-random_seed_list = np.arange(1,3)
+random_seed_list = np.arange(1,6)
 
 #----------------------------------------------------------------
 # Simulation parameters
@@ -255,7 +257,7 @@ if save_results:
 		'metadata': simulation_metadata,
 		'results': all_results
 	}
-	with open(f"{file_name}.pkl", "wb") as f:
+	with open(BASE_DIR / f"{file_name}.pkl", "wb") as f:
 		pickle.dump(results_package, f)
 		logging.info("Simulation results saved.")
 else:
@@ -271,9 +273,9 @@ else:
 			vals = df_r[df_r['method'] == m]['TPR_local']
 			mean = vals.mean()
 			std = vals.std()
-			tpr_local_table.loc[r, m] = f"{mean:.2f} ({std:.2f})"
+			tpr_local_table.loc[r, m] = f"{mean:.2f}"
 
-	print("\nLocal TPR (mean (std))")
+	print("\nLocal TPR")
 	print("----------------------------------------------------------------")
 	print(tpr_local_table.to_string())
 
@@ -285,9 +287,9 @@ else:
 			vals = df_r[df_r['method'] == m]['FDP_local']
 			mean = vals.mean()
 			std = vals.std()
-			fdp_local_table.loc[r, m] = f"{mean:.2f} ({std:.2f})"
+			fdp_local_table.loc[r, m] = f"{mean:.2f}"
 
-	print("\nLocal FDP (mean (std))")
+	print("\nLocal FDP")
 	print("----------------------------------------------------------------")
 	print(fdp_local_table.to_string())
 

@@ -2,14 +2,16 @@
 
 import pickle
 import re
+import sys
 
 from localgraph import plot_graph, restrict_to_local_graph
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 
-import sys, os
-sys.path.insert(0, os.path.abspath('../..'))
+from pathlib import Path
+BASE_DIR = Path(__file__).parent
+sys.path.insert(0, str(BASE_DIR.parent.parent))
 from methods import run_method, silggm_methods
 from utils import max_cor_response
 
@@ -25,7 +27,7 @@ np.random.seed(random_seed)
 # cell types: astro, doublet, endo, mg, neuron, oligo, OPC, unID 
 cell_type = 'OPC'
 
-methods_to_run = ['mmpc_local']
+methods_to_run = ['aracne']
 apply_npn = False
 max_cor_lambda = False
 max_radius = 2
@@ -37,7 +39,7 @@ huge_methods = ['glasso', 'mb']
 #----------------------------------------------------------------
 # Load data
 #----------------------------------------------------------------
-with open('./data/cleaned_data/cleaned_data.pkl', 'rb') as f:
+with open(BASE_DIR / 'data' / 'cleaned_data' / 'cleaned_data.pkl', 'rb') as f:
 	data = pickle.load(f)
 
 X = data['X']
@@ -217,7 +219,7 @@ for method_name in methods_to_run:
 		result['feature_names'] = feature_names
 		result['apply_npn'] = apply_npn
 
-		with open(filename, "wb") as f:
+		with open(BASE_DIR / 'results' / filename, "wb") as f:
 			pickle.dump(result, f)
 
 		print(f"Saved result to {filename}")

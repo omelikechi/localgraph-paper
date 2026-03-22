@@ -1,12 +1,15 @@
 # Simulation illustration for comparing truth, PFS, graphical lasso, and nodewise lasso (Figures 1a–1d)
 
+import sys
+
 from localgraph import pfs, plot_graph, restrict_to_local_graph, tp_and_fp
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt
 import numpy as np
 
-import sys, os
-sys.path.insert(0, os.path.abspath('..'))
+from pathlib import Path
+BASE_DIR = Path(__file__).parent
+sys.path.insert(0, str(BASE_DIR.parent))
 from methods import run_method
 from simulate_block import block_graph
 
@@ -184,7 +187,7 @@ if show_graphs:
 
 	fig.tight_layout(pad=0.5)
 	if save_plot:
-		plt.savefig(f"{fig_name}.png", dpi=dpi)
+		plt.savefig(BASE_DIR / f"{fig_name}.png", dpi=dpi)
 	plt.show()
 
 
