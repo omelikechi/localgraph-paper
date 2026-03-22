@@ -1,12 +1,12 @@
 # Human connectome data analysis
 
-This folder contains code and data for reproducing the human connectome and cognition analysis (Section 6).
+This folder contains code and data for reproducing the human connectome and cognition analyses (Section 6).
 
 ---
 
 ## Contents
 
-- `data/`: Raw and cleaned data files, scripts for data cleaning, files for enrichment analysis
+- `data/`: Datasets and scripts for data cleaning
 - `enrichment/`: Scripts for running enrichment analyses
 - `figures/`: Scripts for plotting local graphs
 - `results/`: Outputs from `run_pfs.py` and `run_methods.py`

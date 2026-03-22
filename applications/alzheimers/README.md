@@ -1,12 +1,12 @@
 # Alzheimer's disease data analysis
 
-This folder contains code and data for reproducing the Alzheimer's disease (AD) analysis (Section 7).
+This folder contains code and data for reproducing the Alzheimer's disease (AD) analyses (Section 7).
 
 ---
 
 ## Contents
 
-- `data/`: Includes script used to clean raw data as well as gene sets from [MSigDB](https://www.gsea-msigdb.org/gsea/msigdb)
+- `data/`: Script for data cleaning (data too large for GitHub; see not below)
 - `enrichment/`: Scripts for running gene enrichment analyses
 - `figures/`: Scripts for plotting local graphs
 - `results/`: Outputs from `run_pfs.py` and `run_methods.py`

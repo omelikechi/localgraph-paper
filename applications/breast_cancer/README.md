@@ -1,12 +1,12 @@
 # TCGA breast cancer analysis
 
-This folder contains code and data for reproducing the breast cancer analysis (Section 5).
+This folder contains code and data for reproducing the breast cancer analyses (Section 5).
 
 ---
 
 ## Contents
 
-- `data/`: Raw and cleaned data files, scripts for data cleaning, and gene sets from [MSigDB](https://www.gsea-msigdb.org/gsea/msigdb)
+- `data/`: Datasets and scripts for data cleaning
 - `enrichment/`: Scripts for running gene and protein enrichment analyses
 - `figures/`: Scripts for plotting local graphs
 - `results/`: Outputs from `run_pfs.py` and `run_methods.py`
