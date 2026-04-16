@@ -1,10 +1,8 @@
-# Local graph estimation with pathwise false discovery control – paper repository
+# Local graph estimation – paper repository
 
 This repository accompanies the paper:
 
-**Local graph estimation with pathwise false discovery control**
-
-[[arXiv]](https://doi.org/10.48550/arXiv.2507.17172)
+**Local graph estimation with pathwise false discovery control** • [[arXiv]](https://doi.org/10.48550/arXiv.2507.17172)
 
 It contains the code, included datasets, stored outputs, and setup instructions needed to reproduce the analyses, figures, and results presented in the main text and supplementary materials.
 
