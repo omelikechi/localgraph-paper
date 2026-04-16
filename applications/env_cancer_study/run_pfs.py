@@ -30,7 +30,7 @@ np.random.seed(random_seed)
 # Graph details
 radius = 1
 qpath_max = 1
-fdr_local = [0.1, 0.008]
+fdr_local = [0.05]
 
 # custom neighborhood
 """
@@ -104,3 +104,5 @@ if show_result:
 
 	fig.tight_layout()
 	plt.show()
+
+
