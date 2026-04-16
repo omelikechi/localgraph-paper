@@ -5,9 +5,24 @@ This repository accompanies the paper:
 **Local graph estimation: Interpretable network discovery for complex data**  
 [[arXiv]](https://doi.org/10.48550/arXiv.2507.17172)
 
-It contains all code and data needed to reproduce the analyses, figures, and results presented in the main text and supplementary materials.
+It contains the code, included datasets, stored outputs, and setup instructions needed to reproduce the analyses, figures, and results presented in the main text and supplementary materials.
 
 > **Note:** This repository is intended to reproduce results in the paper. For a general-use Python package implementing local graph estimation and pathwise feature selection (PFS), see: https://github.com/omelikechi/localgraph
+
+---
+
+## Installation
+
+Python 3.10+ is required. Install all dependencies with:
+```bash
+python3 -m pip install -r requirements.txt
+```
+
+Some comparison methods require a working R installation. If R-based methods are used,
+ensure R is installed, accessible from your system path, and has the required packages:
+```r
+install.packages(c("bnlearn", "huge", "mgm", "SILGGM", "knockoff"))
+```
 
 ---
 
@@ -16,34 +31,22 @@ It contains all code and data needed to reproduce the analyses, figures, and res
 **Simulation illustration** (no data download required, runs in ~30 seconds):
 ```bash
 cd simulations
-python illustration.py
+python3 illustration.py
 ```
 
 **HCP neuroimaging application** (~5 minutes):
 ```bash
 cd applications/hcp
-python run_pfs.py
+python3 run_pfs.py
 ```
 
 All scripts must be run from within their own directory as shown above.
 
 ---
 
-## Installation
-
-Python 3.10+ is required. Install all dependencies with:
-```bash
-pip install -r requirements.txt
-```
-
-- Some comparison methods require a working R installation.
-- If R-based methods are used, ensure R is installed and accessible from your system path.
-
----
-
 ## Repository structure
 
-- `applications/`: peproducible analyses for all real-data applications:
+- `applications/`: reproducible analyses for all real-data applications:
 	- `alzheimers/`: Alzheimer's single-nucleus RNA-seq
 	- `breast_cancer/`: TCGA breast cancer multi-omics
 	- `env_cancer_study/`: environmental cancer study
@@ -58,7 +61,7 @@ pip install -r requirements.txt
 - `simulations/`: code for simulation studies and the illustrative example
 - `methods/`: wrappers and helper scripts for comparison methods
 - `additional_figures/`: script for the conceptual illustration in the supplement
-- `requirements.txt`: python dependencies
+- `requirements.txt`: Python dependencies
 
 ---
 
@@ -72,5 +75,3 @@ Cleaned datasets are included for all applications except the Alzheimer's diseas
 
 For questions about the code or method, please contact:  
 Omar Melikechi at omar.melikechi@duke.edu
-
-

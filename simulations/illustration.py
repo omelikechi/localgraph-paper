@@ -29,7 +29,7 @@ np.random.seed(random_seed)
 n = 200
 radius = 3
 
-# eignevalue scaling
+# Eigenvalue scaling
 lmin = 0.01
 lmax = 10
 
@@ -189,5 +189,4 @@ if show_graphs:
 	if save_plot:
 		plt.savefig(BASE_DIR / f"{fig_name}.png", dpi=dpi)
 	plt.show()
-
 

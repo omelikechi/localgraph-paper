@@ -16,7 +16,6 @@ This folder contains code and data for reproducing the breast cancer analyses (S
 ---
 
 ## Notes
-- The RNAseq data file exceeds GitHub’s 100MB file limit and is not included in the public repo. However, it can be downloaded for free from [LinkedOmics](https://www.linkedomics.org/data_download/TCGA-BRCA/).
+- The RNA-seq data file exceeds GitHub’s 100MB file limit and is not included in the public repo. However, it can be downloaded for free from [LinkedOmics](https://www.linkedomics.org/data_download/TCGA-BRCA/).
 - PFS is a stochastic algorithm, and results may vary slightly across different machines even when using the same random seed. On a single machine, results are deterministic across runs with a fixed seed.
-
 
