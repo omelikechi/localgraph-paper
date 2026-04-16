@@ -1,8 +1,9 @@
-# Local graph estimation – paper repository
+# Local graph estimation with pathwise false discovery control – paper repository
 
-This repository accompanies the paper:  
+This repository accompanies the paper:
 
-**Local graph estimation: Interpretable network discovery for complex data**  
+**Local graph estimation with pathwise false discovery control**
+
 [[arXiv]](https://doi.org/10.48550/arXiv.2507.17172)
 
 It contains the code, included datasets, stored outputs, and setup instructions needed to reproduce the analyses, figures, and results presented in the main text and supplementary materials.
@@ -13,9 +14,9 @@ It contains the code, included datasets, stored outputs, and setup instructions 
 
 ## Installation
 
-Python 3.10+ is required. Install all dependencies with:
+Python 3.10+ is required. After activating your Python environment, install all dependencies with:
 ```bash
-python3 -m pip install -r requirements.txt
+python -m pip install -r requirements.txt
 ```
 
 Some comparison methods require a working R installation. If R-based methods are used,
@@ -31,13 +32,13 @@ install.packages(c("bnlearn", "huge", "mgm", "SILGGM", "knockoff"))
 **Simulation illustration** (no data download required, runs in ~30 seconds):
 ```bash
 cd simulations
-python3 illustration.py
+python illustration.py
 ```
 
 **HCP neuroimaging application** (~5 minutes):
 ```bash
 cd applications/hcp
-python3 run_pfs.py
+python run_pfs.py
 ```
 
 All scripts must be run from within their own directory as shown above.
