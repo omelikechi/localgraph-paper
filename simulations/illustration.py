@@ -1,5 +1,6 @@
 # Simulation illustration for comparing truth, PFS, graphical lasso, and nodewise lasso (Figures 1a–1d)
 
+import pickle
 import sys
 
 from localgraph import pfs, plot_graph, restrict_to_local_graph, tp_and_fp
@@ -17,6 +18,7 @@ from simulate_block import block_graph
 # Settings
 #--------------------------------
 save_plot = False
+save_results = False
 dpi = 300
 fig_name = f'illustration_dpi{dpi}'
 
@@ -156,6 +158,12 @@ for method_name in methods:
 		print(f'{method_name}:')
 		print(f' - Full graph: {tp_full}, {fp_full}, {fp_full / max(fp_full + tp_full, 1):.2f}')
 		print(f' - Local graph: {tp}, {fp}, {fp / max(fp + tp, 1):.2f}')
+
+if save_results:
+	with open(BASE_DIR / 'illustration_results.pkl', 'wb') as f:
+		pickle.dump({'results': results, 'A_true': A_true,
+					 'target_features': target_features, 'feature_names': feature_names}, f)
+	print(f'Results saved to {BASE_DIR / "illustration_results.pkl"}')
 
 #--------------------------------
 # Plot estimated graphs
